@@ -128,7 +128,7 @@ hive_user_home_dir = "/home/hive"
 # hadoop parameters for stacks that support rolling_upgrade
 if stack_version_formatted_major and check_stack_feature(StackFeature.ROLLING_UPGRADE, stack_version_formatted_major):
   hive_home = format("{stack_root}/current/hive-client")
-  zk_home = format("{stack_root}/{stack_version_formatted_major}/usr/lib/zookeeper")
+  zk_home = format("{stack_root}/{version}/usr/lib/zookeeper")
 
 zk_bin_dir = format('{zk_home}/bin')
 hive_bin_dir = format('{hive_home}/bin')
