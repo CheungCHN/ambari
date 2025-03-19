@@ -47,16 +47,28 @@ App.ApplicationView = Em.View.extend({
    * Navigation Bar should be initialized after cluster data is loaded
    */
   initNavigationBar: function () {
-    if (App.get('router.mainController.isClusterDataLoaded')) {
-      $('body').on('DOMNodeInserted', '.navigation-bar', () => {
-        $('.navigation-bar').navigationBar({
-          fitHeight: true,
-          collapseNavBarClass: 'icon-double-angle-left',
-          expandNavBarClass: 'icon-double-angle-right'
-        });
-        $('body').off('DOMNodeInserted', '.navigation-bar');
+  let navigationBarObserver = null; 
+  if (App.get('router.mainController.isClusterDataLoaded')) {
+    navigationBarObserver = new MutationObserver((mutationsList) => {
+      mutationsList.forEach((mutation) => {
+        if (mutation.type === 'childList') {
+          mutation.addedNodes.forEach((node) => {
+            if (node.classList && node.classList.contains('navigation-bar')) {
+              $(node).navigationBar({
+                fitHeight: true,
+                collapseNavBarClass: 'icon-double-angle-left',
+                expandNavBarClass: 'icon-double-angle-right'
+              });
+              navigationBarObserver.disconnect();
+            }
+          });
+        }
       });
-    }
-  }.observes('App.router.mainController.isClusterDataLoaded')
+    });
+    const targetNode = document.body;
+    const config = { childList: true, subtree: true };
+    navigationBarObserver.observe(targetNode, config);
+  }
+}.observes('App.router.mainController.isClusterDataLoaded')
 
 });
